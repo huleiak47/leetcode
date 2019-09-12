@@ -1,60 +1,57 @@
 /*
- * [20] Valid Parentheses
+ * @lc app=leetcode.cn id=20 lang=cpp
  *
- * https://leetcode.com/problems/valid-parentheses/description/
+ * [20] 有效的括号
+ *
+ * https://leetcode-cn.com/problems/valid-parentheses/description/
  *
  * algorithms
- * Easy (34.29%)
- * Total Accepted:    361.6K
- * Total Submissions: 1.1M
+ * Easy (39.28%)
+ * Likes:    1052
+ * Dislikes: 0
+ * Total Accepted:    122.1K
+ * Total Submissions: 308.5K
  * Testcase Example:  '"()"'
  *
- * Given a string containing just the characters '(', ')', '{', '}', '[' and
- * ']', determine if the input string is valid.
+ * 给定一个只包括 '('，')'，'{'，'}'，'['，']' 的字符串，判断字符串是否有效。
  *
- * An input string is valid if:
- *
- *
- * Open brackets must be closed by the same type of brackets.
- * Open brackets must be closed in the correct order.
+ * 有效字符串需满足：
  *
  *
- * Note that an empty string is also considered valid.
- *
- * Example 1:
- *
- *
- * Input: "()"
- * Output: true
+ * 左括号必须用相同类型的右括号闭合。
+ * 左括号必须以正确的顺序闭合。
  *
  *
- * Example 2:
+ * 注意空字符串可被认为是有效字符串。
+ *
+ * 示例 1:
+ *
+ * 输入: "()"
+ * 输出: true
  *
  *
- * Input: "()[]{}"
- * Output: true
+ * 示例 2:
+ *
+ * 输入: "()[]{}"
+ * 输出: true
  *
  *
- * Example 3:
+ * 示例 3:
+ *
+ * 输入: "(]"
+ * 输出: false
  *
  *
- * Input: "(]"
- * Output: false
+ * 示例 4:
+ *
+ * 输入: "([)]"
+ * 输出: false
  *
  *
- * Example 4:
+ * 示例 5:
  *
- *
- * Input: "([)]"
- * Output: false
- *
- *
- * Example 5:
- *
- *
- * Input: "{[]}"
- * Output: true
- *
+ * 输入: "{[]}"
+ * 输出: true
  *
  */
 #include <vector>
