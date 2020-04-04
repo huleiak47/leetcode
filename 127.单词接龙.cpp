@@ -63,35 +63,40 @@
 #include <queue>
 #include <chrono>
 #include <list>
+#include <unordered_map>
+#include <unordered_set>
 using namespace std;
 
 // @lc code=start
 class Solution {
+private:
+    // 这个字典很重要，可极大加快对邻居单词的查找
+    unordered_map<string, vector<const string*>> neighborMap;
+
 public:
-    int GetDistance(const string& a, const string& b)
+    void prepare(vector<string>& wordList)
     {
-        int dist = 0;
-        for (int i = 0; i < a.length(); ++i) {
-            if (a[i] != b[i]) {
-                dist++;
-                if (dist > 1) {
-                    break;
-                }
+        for (const string& word : wordList) {
+            for (int i = 0; i < word.length(); ++i) {
+                string key = word;
+                key[i]     = '*';
+                neighborMap[key].push_back(&word);
             }
         }
-        return dist;
     }
+
     int ladderLength(string beginWord, string endWord, vector<string>& wordList)
     {
+        prepare(wordList);
         int depth = 1;
-        vector<bool> wordUsed(wordList.size());
-        queue<string*> wordQue;
+        unordered_set<const string*> used;
+        queue<const string*> wordQue;
 
         wordQue.push(&beginWord);
         wordQue.push(nullptr); // nullptr 用于每一层的分隔，以便于depth增加1
 
         while (1) {
-            string* word = wordQue.front();
+            const string* word = wordQue.front();
             wordQue.pop();
             if (word == nullptr) {
                 if (wordQue.empty()) {
@@ -104,18 +109,23 @@ public:
                 continue;
             }
 
-            for (int i = 0; i < wordList.size(); ++i) {
-                if (wordUsed[i]) {
+            // 在字典里搜索最近且未使用的单词
+            for (int i = 0; i < word->length(); ++i) {
+                string key = *word;
+                key[i]     = '*';
+                if (neighborMap.count(key) == 0) {
                     continue;
                 }
+                for (const string* next : neighborMap[key]) {
+                    if (used.count(next)) {
+                        continue;
+                    }
 
-                string& next = wordList[i];
-                if (GetDistance(*word, next) == 1) {
-                    if (next == endWord) {
+                    if (*next == endWord) {
                         return depth + 1;
                     }
-                    wordQue.push(&next);
-                    wordUsed[i] = true;
+                    wordQue.push(next);
+                    used.insert(next);
                 }
             }
         }
