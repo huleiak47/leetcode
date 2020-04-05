@@ -31,6 +31,7 @@
 #include <cstdint>
 #include <cstdlib>
 #include <algorithm>
+#include <list>
 using namespace std;
 
 #ifndef NULL
@@ -53,6 +54,18 @@ struct ListNode {
  *     ListNode(int x) : val(x), next(NULL) {}
  * };
  */
+
+bool CompareNode(ListNode*& a, ListNode*& b)
+{
+    if (a == nullptr) {
+        return false;
+    }
+    if (b == nullptr) {
+        return true;
+    }
+    return a->val < b->val;
+}
+
 class Solution {
 public:
     ListNode* mergeKLists(vector<ListNode*>& lists)
@@ -60,30 +73,36 @@ public:
         ListNode root(0); // 占位用
         ListNode* curNode = &root;
 
-        while (1) {
-            int minIndex      = -1;
-            int minVal        = (int)0x7fffffff;
-            ListNode* minLink = nullptr;
-            int nullCount     = 0;
+        sort(lists.begin(), lists.end(), CompareNode);
+        list<ListNode*> nodes;
+        for (ListNode* node : lists) {
+            if (node == nullptr) {
+                continue;
+            }
+            nodes.push_back(node);
+        }
 
-            for (int i = 0; i < lists.size(); ++i) {
-                if (lists[i] == nullptr) {
-                    nullCount++;
-                    continue;
+        while (nodes.size() > 1) {
+            curNode->next = *nodes.begin(); // 排序过的列表，第一个就是最小值
+            nodes.erase(nodes.begin());     // 去掉第一个
+            curNode        = curNode->next;
+            ListNode* next = curNode->next;
+            if (next != nullptr) { // 将第一个的下一节点插入到nodes中
+                bool inserted = false;
+                for (auto iter = nodes.begin(); iter != nodes.end(); ++iter) {
+                    if (next->val < (*iter)->val) {
+                        nodes.insert(iter, next);
+                        inserted = true;
+                        break;
+                    }
                 }
-                if (lists[i]->val < minVal) {
-                    minVal   = lists[i]->val;
-                    minIndex = i;
-                    minLink  = lists[i];
+                if (!inserted) {
+                    nodes.push_back(next);
                 }
             }
-            if (nullCount == lists.size()) {
-                break;
-            }
-
-            lists[minIndex] = lists[minIndex]->next;
-            curNode->next   = minLink;
-            curNode         = curNode->next;
+        }
+        if (nodes.size() == 1) {
+            curNode->next = *nodes.begin();
         }
 
         return root.next; // root只是占位
